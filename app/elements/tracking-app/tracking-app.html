@@ -1,0 +1,22 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../tracking-map/tracking-map.html">
+
+<polymer-element name="tracking-app" attributes="">
+  <template>
+    <link rel="stylesheet" href="tracking-app.css">
+
+    <core-animated-pages selected="{{page}}" fit>
+
+      <tracking-map name="main"></tracking-map>
+
+    </core-animated-pages>
+  </template>
+  <script>
+    (function () {
+
+      Polymer({
+      });
+
+    })();
+  </script>
+</polymer-element>

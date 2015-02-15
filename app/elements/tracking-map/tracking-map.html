@@ -1,0 +1,92 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/core-elements/core-elements.html">
+<link rel="import" href="../../bower_components/paper-elements/paper-elements.html">
+<link rel="import" href="../../bower_components/core-icons/communication-icons.html">
+<link rel="import" href="../../bower_components/core-icons/device-icons.html">
+
+<polymer-element name="tracking-map">
+  <template>
+    <link rel="stylesheet" href="tracking-map.css">
+
+    <core-drawer-panel forceNarrow on-core-select="drawerSelect">
+      <core-header-panel drawer>
+        <core-toolbar class="menu">
+          <div>Menu</div>
+        </core-toolbar>
+        <div> Drawer content... </div>
+      </core-header-panel>
+
+      <core-header-panel main>
+        <core-toolbar>
+          <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
+          <div>Tracking</div>
+          <span flex></span>
+          <paper-icon-button icon="communication:location-off" hidden?="{{tracking}}" on-tap="{{startTracking}}"></paper-icon-button>
+          <paper-icon-button icon="communication:location-on" hidden?="{{!tracking}}" on-tap="{{stopTracking}}"></paper-icon-button>
+          <paper-icon-button icon="more-vert"></paper-icon-button>
+        </core-toolbar>
+
+        <google-map id="map" map="{{map}}" latitude="{{latitude}}" longitude="{{longitude}}" fit>
+          <template repeat="{{position, i in positions}}">
+            <google-map-marker map="{{map}}" latitude="{{position.coords.latitude}}" longitude="{{position.coords.longitude}}">
+              <div>{{ position.timestamp | toUTCString }}</div>
+            </google-map-marker>
+          </template>
+        </google-map>
+
+      </core-header-panel>
+
+    </core-drawer-panel>
+
+  </template>
+  <script>
+    (function () {
+
+      Polymer({
+        ready: function() {
+          this.positions = [];
+          this.tracking = false;
+        },
+
+        startTracking: function() {
+          if (this.tracking) {
+            return;
+          }
+
+          if ("geolocation" in navigator) {
+            /* geolocation is available */
+            this.watchId = navigator.geolocation.watchPosition(this.onPositionUpdate.bind(this));
+            this.tracking = true;
+          } else {
+            /* geolocation IS NOT available */
+            this.watchId = -1;
+          }
+        },
+
+        stopTracking: function() {
+          if (!this.tracking) {
+            return;
+          }
+
+          if (0 < this.watchId) {
+            navigator.geolocation.clearWatch(this.watchId);
+            this.tracking = false;
+          }
+        },
+
+        onPositionUpdate: function(position) {
+          console.log(position);
+          this.latitude = position.coords.latitude;
+          this.longitude = position.coords.longitude;
+          this.positions.push(position);
+        },
+
+        toUTCString: function(timestamp) {
+          return new Date(timestamp).toUTCString();
+        },
+      });
+
+    })();
+  </script>
+</polymer-element>

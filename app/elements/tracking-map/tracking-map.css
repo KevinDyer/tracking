@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+core-toolbar.menu {
+  background-color: #CDDC39;
+  color: #fff;
+}
+
+core-toolbar {
+  background-color: #2196F3;
+  color: #fff;
+}
